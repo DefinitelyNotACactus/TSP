@@ -64,7 +64,7 @@ def readInstance(filePath):
                     break
                 p += 1
             
-            for i in range(n-1):
+            for i in range(n):
                 for j in range(i+1, n):
                     dist[i][j] = int(text[p])
                     dist[j][i] = dist[i][j]
@@ -230,12 +230,12 @@ def createProblem(n, matrix):
     for j in range(n):
           prob.variables.add(obj=[0], lb=[1], ub=[n], types="I", names=["u_" + str(j+1)]) #adicionando as variaveis uj
 
-    for j in range(n):
+    for i in range(n):
        var_list = []
        coeff_list = []
-       for i in range(n):
+       for j in range(n):
           if j != i:
-            var_list.append("x_" + str(i+1) + "_" + str(j+1))
+            var_list.append("x_" + str(j+1) + "_" + str(i+1))
             coeff_list.append(1)
        prob.linear_constraints.add(lin_expr=[[var_list, coeff_list]], senses="E", rhs=[1], names = ["COV1_" + str(i+1)]) #somatorio de xij = 1 p/ todo i pertencente a v, i != j
        
@@ -275,11 +275,25 @@ def main():
     print "Solution value  = ", prob.solution.get_objective_value()
     print "Solution (Instance:", str(sys.argv[1]) + ")"
     
+    ai = []
+    aj = []
     for i in range(dim):
         for j in range(dim):
-            if(prob.solution.get_values("x_" + str(i+1) + "_" + str(j+1)) == 1):
-                print "x_" + str(i+1) + "_" + str(j+1)
-        
+            if(prob.solution.get_values("x_" + str(i+1) + "_" + str(j+1)) > 0.9):
+                #print "x_" + str(i+1) + "_" + str(j+1)
+                ai.append(i)
+                aj.append(j)
+
+
+    sol = [ai[aj[0]] + 1]
+    aux = ai[aj[0]]
+    
+    for i in range(1, dim):
+        aux = ai[aj[aux]]
+        sol.append(aux+1)
+    
+    print sol[::-1]
+    
 if __name__ == "__main__":
    main()
 
