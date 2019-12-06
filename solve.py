@@ -203,21 +203,93 @@ def readInstance(filePath):
             x[i] = float(text[p])
             p += 1
             y[i] = float(text[p])
-            p+= 1
+            p += 1
         
         for i in range(0, n):
             for j in range(0, n):
                 dist[i][j] = math.ceil(math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2))
     
+    elif ewt == "GEO":
+        while True:
+            if(text[p] == "NODE_COORD_SECTION"):
+                p += 1
+                break
+            p += 1
+        
+        tempCity, lat, lon = 0, [0.0] * n, [0.0] * n
+        x, y = [0.0] * n, [0.0] * n
+        
+        for i in range(n):
+            tempCity = int(text[p])
+            p += 1
+            x[i] = float(text[p])
+            p += 1
+            y[i] = float(text[p])
+            p += 1
+            
+        pi = 3.141592
+        min, deg = 0.0, 0
+        
+        for i in range(n):
+            deg = int(x[i])
+            min = x[i] - deg
+            lat[i] = pi * (deg + 5.0 * min / 3.0) / 180.0
+        
+        for i in range(n):
+            deg = int(y[i])
+            min = y[i] - deg
+            lon[i] = pi * (deg + 5.0 * min / 3.0) / 180.0
+        
+        for i in range(n):
+            for j in range(n):
+                dist[i][j] = distGeo(lat, lon, i, j)
+    
+    elif ewt == "ATT":
+        while True:
+            if(text[p] == "NODE_COORD_SECTION"):
+                p += 1
+                break
+            p += 1
+        
+        tempCity, x, y = 0, [0] * n, [0] * n
+        
+        for i in range(n):
+            tempCity = int(text[p])
+            p += 1
+            x[i] = int(text[p])
+            p += 1
+            y[i] = int(text[p])
+            p += 1
+        
+        for i in range(n):
+            for j in range(n):
+                dist[i][j] = distAtt(x, y, i, j)
+                
     else:
         print "TIPO NAO SUPORTADO!"
+        f.close()
+        sys.exit()
         
-    #TODO: GEO
     #TODO: ATT
     f.close()
     
     return n, dist
 
+def distAtt(x, y, i, j):
+    rij = math.sqrt(((x[i] - x[j])**2 + (y[i] - y[j])**2) / 10)
+    tij = (rij + 0.5) // 1
+    
+    return tij + 1 if tij < rij else tij
+    
+def distGeo(lat, lon, i, j):
+    RRR = 6378.388
+    
+    q1 = math.cos(lon[i] - lon[j])
+    q2 = math.cos(lat[i] - lat[j])
+    q3 = math.cos(lat[i] + lat[j])
+    
+    return int(RRR * math.acos(0.5 * ((1.0 + q1) * q2 - (1.0 - q1) * q3)) + 1.0)
+    
 def createProblem(n, matrix):
     
     prob = cplex.Cplex()

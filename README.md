@@ -1,8 +1,12 @@
+# TSP
+Resolução do problema do caixeiro viajante (TSP) usando modelagem
+
+## Tabela de Resultados
 | Instância | Solução ótima | Tempo de execução (seg.) |
 |-----------|---------------|--------------------------|
 | a280      | 2579          | TDB                      |
 | ali535    | 202310        | TDB                      |
-| att48     | 10628         | TDB                      |
+| att48     | 10628         | 425.74                   |
 | att532    | 27686         | TDB                      |
 | bayg29    | 1610          | 0.8                      |
 | bays29    | 2020          | 1.08                     |
