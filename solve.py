@@ -273,16 +273,13 @@ def main():
     # the following line prints the corresponding string
     print prob.solution.status[prob.solution.get_status()]
     print "Solution value  = ", prob.solution.get_objective_value()
-    print "Solution:", str(sys.argv[1])
+    print "Solution (Instance:", str(sys.argv[1]) + ")"
     
-    #for i in range(dim):
-        #print prob.solution.get_values("u_" + str(i+1))
-
-    #for i in range(dim):
-        #for j in range(dim):
-            #if prob.solution.get_values("x_" + str(i+1) + "_" + str(j+1)) == 1:
-                #print "x_" + str(i+1) + "_" + str(j+1)
-                
+    for i in range(dim):
+        for j in range(dim):
+            if(prob.solution.get_values("x_" + str(i+1) + "_" + str(j+1)) == 1):
+                print "x_" + str(i+1) + "_" + str(j+1)
+        
 if __name__ == "__main__":
    main()
 
