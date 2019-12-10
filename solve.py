@@ -335,6 +335,8 @@ def main():
         dim, matrix = readInstance(sys.argv[1])
         prob = createProblem(dim, matrix)
         prob.write("modelo.lp")
+        prob.parameters.timelimit.set(3600)
+        prob.parameters.threads.set(1)
         prob.solve()
     except CplexError as exc:
         print(exc)
